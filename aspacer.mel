@@ -1,4 +1,5 @@
 // a tool to space out bulk-imported assets across a grid
+// author: dimelo waterson (@boner-cmd)
 
 // from help.autodesk.com sample MEL code
 // https://help.autodesk.com/view/MAYAUL/2020/ENU/index.html?contextId=COMMANDS-INDEX
