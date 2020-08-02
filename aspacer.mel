@@ -57,15 +57,11 @@ proc spaceObjs( string $groupName, float $spacing ) {
     string $transobj_x = $obj + ".translateX";
     string $transobj_z = $obj + ".translateZ";
     string $transobj_y = $obj + ".translateY";
-    if ( $needCenter ) {
-      setAttr $transobj_x 0;
-      setAttr $transobj_z 0;
-      setAttr $transobj_y 0;
-    }
     if ( $xcount > $squareish ) {
       $xcount = 0;
       $zcount += 1;
     }
+    setAttr $transobj_y 0;
     setAttr $transobj_x ($xcount * $spacing);
     setAttr $transobj_z ($zcount * $spacing);
     $xcount += 1;
