@@ -1,4 +1,5 @@
 // a tool to space out bulk-imported assets across a grid
+// author: dimelo waterson (@boner-cmd)
 
 // from help.autodesk.com sample MEL code
 // https://help.autodesk.com/view/MAYAUL/2020/ENU/index.html?contextId=COMMANDS-INDEX
@@ -19,20 +20,15 @@ global proc aSpacer()
     -resizeToFitChildren true
     -sizeable false
     "aspWindow";
-  columnLayout
-    -columnAttach "left" 5
-    -rowSpacing 10;
-
-  // need to add a text object as a label
+  formLayout -p aspWindow "testForm";
   text
-    -label "Matrix Object Spacing"
+    -label "Matrix object spacing"
     "spacingLabel";
   floatField
     -minValue 0
     -value 0
     -precision 2
     -changeCommand "$spaceInput = `floatField -query -value spacingField`"
-    -enterCommand "setFocus startButton"
     "spacingField";
   radioButtonGrp
     -enableKeyboardFocus true
@@ -47,12 +43,28 @@ global proc aSpacer()
     -onCommand2 "$matrixRatio = 1.33"
     -onCommand3 "$matrixRatio = 1.50"
     -onCommand4 "$matrixRatio = 2.00"
+    -columnAttach 1 "left" 0
+    -columnWidth 1 166
+    -columnWidth 2 40
+    -columnWidth 3 40
+    -columnWidth 4 40
+    -columnWidth 5 40
     "matrixRadioBtn";
   button
     -enableKeyboardFocus true
     -label "Go"
     -command "spaceObjs($spaceInput,$matrixRatio)"
-    "startButton";
+    "goButton";
+  formLayout -edit
+    -attachForm "spacingLabel" "left" 5
+    -attachForm "spacingLabel" "top" 10
+    -attachControl "spacingField" "left" 5 "spacingLabel"
+    -attachForm "spacingField" "top" 6
+    -attachControl "matrixRadioBtn" "top" 10 "spacingLabel"
+    -attachForm "matrixRadioBtn" "left" 5
+    -attachControl "goButton" "top" 10 "matrixRadioBtn"
+    -attachForm "goButton" "left" 5
+    "testForm";
   showWindow aspWindow;
 }
 
@@ -64,9 +76,6 @@ proc spaceObjs( float $spacing,float $ratio) {
     print "More than one object selected.";
   } else if ( $selectionSize == 0 ) {
     print "No object selected.";
-  } else if ( $selectionSize < 0 ) {
-    select -clear;
-    print "Negative selection detected.";
   } else {
     string $givenObjects[];
     $givenObjects = `listRelatives $selection`;
