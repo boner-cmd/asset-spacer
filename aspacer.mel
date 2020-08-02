@@ -76,9 +76,6 @@ proc spaceObjs( float $spacing,float $ratio) {
     print "More than one object selected.";
   } else if ( $selectionSize == 0 ) {
     print "No object selected.";
-  } else if ( $selectionSize < 0 ) {
-    select -clear;
-    print "Negative selection detected.";
   } else {
     string $givenObjects[];
     $givenObjects = `listRelatives $selection`;
