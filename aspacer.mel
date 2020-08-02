@@ -81,7 +81,7 @@ proc spaceObjs( float $spacing,float $ratio) {
         string $transobj_x = $obj + ".translateX";
         string $transobj_z = $obj + ".translateZ";
         string $transobj_y = $obj + ".translateY";
-        if ( $xcount = $squareish ) {
+        if ( $xcount == $squareish ) {
           $xcount = 0;
           $zcount += 1;
         }
