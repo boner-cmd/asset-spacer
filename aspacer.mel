@@ -55,7 +55,6 @@ proc spaceObjs( float $spacing ) {
     $givenObjects = `listRelatives $selection`;
     int $xcount = 0;
     int $zcount = 0;
-    $givenObjects = `listRelatives $groupName`;
     $squareish = int(sqrt(size($givenObjects)));
     for ( $obj in $givenObjects ) {
       string $transobj_x = $obj + ".translateX";
