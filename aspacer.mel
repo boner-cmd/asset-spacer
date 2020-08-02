@@ -29,7 +29,6 @@ global proc aSpacer()
     -value 0
     -precision 2
     -changeCommand "$spaceInput = `floatField -query -value spacingField`"
-    -enterCommand "setFocus startButton"
     "spacingField";
   radioButtonGrp
     -enableKeyboardFocus true
@@ -58,9 +57,9 @@ global proc aSpacer()
     "goButton";
   formLayout -edit
     -attachForm "spacingLabel" "left" 5
-    -attachForm "spacingLabel" "top" 9
+    -attachForm "spacingLabel" "top" 10
     -attachControl "spacingField" "left" 5 "spacingLabel"
-    -attachForm "spacingField" "top" 5
+    -attachForm "spacingField" "top" 6
     -attachControl "matrixRadioBtn" "top" 10 "spacingLabel"
     -attachForm "matrixRadioBtn" "left" 5
     -attachControl "goButton" "top" 10 "matrixRadioBtn"
