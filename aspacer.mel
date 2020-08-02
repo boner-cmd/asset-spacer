@@ -11,8 +11,9 @@
 global proc aSpacer()
 {
   if (`window -exists aspWindow`) deleteUI aspWindow;
-  float $spaceInput;
-  float $matrixRatio;
+  float $spaceInput = 0;
+  float $matrixRatio = 1;
+  int $center = 0;
   window
     -title "Asset Spacer"
     -iconName "aspWindow"
@@ -31,7 +32,6 @@ global proc aSpacer()
     -changeCommand "$spaceInput = `floatField -query -value spacingField`"
     "spacingField";
   radioButtonGrp
-    -enableKeyboardFocus true
     -numberOfRadioButtons 4
     -label "Matrix dimensions (approximate)"
     -labelArray4 "1x1" "4x3" "3x2" "2x1"
@@ -51,10 +51,13 @@ global proc aSpacer()
     -columnWidth 5 40
     "matrixRadioBtn";
   button
-    -enableKeyboardFocus true
     -label "Go"
-    -command "spaceObjs($spaceInput,$matrixRatio)"
+    -command "spaceObjs($spaceInput,$matrixRatio,$centered)"
     "goButton";
+  checkBoxGrp
+    -label "Attempt to center the matrix"
+    -onCommand "$center = 1"
+    -offCommand "$center = 0"
   formLayout -edit
     -attachForm "spacingLabel" "left" 5
     -attachForm "spacingLabel" "top" 10
@@ -68,7 +71,7 @@ global proc aSpacer()
   showWindow aspWindow;
 }
 
-proc spaceObjs( float $spacing,float $ratio) {
+proc spaceObjs( float $spacing,float $ratio,int $center) {
   string $selection[];
   $selection = `ls -sl`;
   $selectionSize = size($selection);
@@ -95,8 +98,15 @@ proc spaceObjs( float $spacing,float $ratio) {
           $zcount += 1;
         }
         setAttr $transobj_y 0;
-        setAttr $transobj_x ($xcount * $spacing);
-        setAttr $transobj_z ($zcount * $spacing);
+        if ( $center ) {
+          float $xOffset = -($squareish/2) * ($ratio);
+          float $zOffset = -($squareish/2) * (1/$ratio);
+          setAttr $transobj_x (($xcount * $spacing) + $xOffset);
+          setAttr $transobj_z (($zcount * $spacing) + $zOffset);
+        } else {
+          setAttr $transobj_x ($xcount * $spacing);
+          setAttr $transobj_z ($zcount * $spacing);
+        }
         $xcount += 1;
       }
     }
