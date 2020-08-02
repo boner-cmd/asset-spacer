@@ -53,23 +53,26 @@ proc spaceObjs( float $spacing ) {
   } else {
     string $givenObjects[];
     $givenObjects = `listRelatives $selection`;
-    int $xcount = 0;
-    int $zcount = 0;
-    $squareish = int(sqrt(size($givenObjects)));
-    for ( $obj in $givenObjects ) {
-      string $transobj_x = $obj + ".translateX";
-      string $transobj_z = $obj + ".translateZ";
-      string $transobj_y = $obj + ".translateY";
-      if ( $xcount > $squareish ) {
-        $xcount = 0;
-        $zcount += 1;
+    $shapeCheck = `listRelatives -s $selection`;
+    if ( size($shapeCheck) != 0 ) {
+      print "Selection has Shape children. Are you sure a group is selected?";
+    } else {
+      int $xcount = 0;
+      int $zcount = 0;
+      $squareish = int(sqrt(size($givenObjects)));
+      for ( $obj in $givenObjects ) {
+        string $transobj_x = $obj + ".translateX";
+        string $transobj_z = $obj + ".translateZ";
+        string $transobj_y = $obj + ".translateY";
+        if ( $xcount > $squareish ) {
+          $xcount = 0;
+          $zcount += 1;
+        }
+        setAttr $transobj_y 0;
+        setAttr $transobj_x ($xcount * $spacing);
+        setAttr $transobj_z ($zcount * $spacing);
+        $xcount += 1;
       }
-
-      // errors if a single cube is selected, starting here
-      setAttr $transobj_y 0;
-      setAttr $transobj_x ($xcount * $spacing);
-      setAttr $transobj_z ($zcount * $spacing);
-      $xcount += 1;
     }
   }
 }
