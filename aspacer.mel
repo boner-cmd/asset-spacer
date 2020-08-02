@@ -37,6 +37,9 @@ global proc aSpacer()
     -command "spaceObjs($spaceInput)"
     "startButton";
   showWindow aspWindow;
+
+// add radio button to do 2x1 rectangle or similar dimension
+
 }
 
 proc spaceObjs( float $spacing ) {
