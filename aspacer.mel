@@ -64,6 +64,8 @@ proc spaceObjs( float $spacing ) {
         $xcount = 0;
         $zcount += 1;
       }
+
+      // errors if a single cube is selected, starting here
       setAttr $transobj_y 0;
       setAttr $transobj_x ($xcount * $spacing);
       setAttr $transobj_z ($zcount * $spacing);
