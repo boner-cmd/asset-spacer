@@ -22,7 +22,7 @@ global proc aSpacer()
     "aspWindow";
   formLayout "testForm";
   text
-    -label "Matrix Object Spacing"
+    -label "Matrix object spacing"
     "spacingLabel";
   floatField
     -minValue 0
@@ -44,6 +44,12 @@ global proc aSpacer()
     -onCommand2 "$matrixRatio = 1.33"
     -onCommand3 "$matrixRatio = 1.50"
     -onCommand4 "$matrixRatio = 2.00"
+    -columnAttach 1 "left" 0
+    -columnWidth 1 166
+    -columnWidth 2 40
+    -columnWidth 3 40
+    -columnWidth 4 40
+    -columnWidth 5 40
     "matrixRadioBtn";
   button
     -enableKeyboardFocus true
