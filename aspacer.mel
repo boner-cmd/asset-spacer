@@ -10,7 +10,8 @@
 global proc aSpacer()
 {
   if (`window -exists aspWindow`) deleteUI aspWindow;
-
+  float $spaceInput;
+  float $matrixRatio;
   window
     -title "Asset Spacer"
     -iconName "aspWindow"
@@ -23,7 +24,9 @@ global proc aSpacer()
     -rowSpacing 10;
 
   // need to add a text object as a label
-
+  text
+    -label "Matrix Object Spacing"
+    "spacingLabel";
   floatField
     -minValue 0
     -value 0
@@ -31,18 +34,29 @@ global proc aSpacer()
     -changeCommand "$spaceInput = `floatField -query -value spacingField`"
     -enterCommand "setFocus startButton"
     "spacingField";
+  radioButtonGrp
+    -enableKeyboardFocus true
+    -numberOfRadioButtons 4
+    -label "Matrix dimensions (approximate)"
+    -labelArray4 "1x1" "4x3" "3x2" "2x1"
+    -annotation1 "Ratio of 1.00"
+    -annotation2 "Ratio of 1.33"
+    -annotation3 "Ratio of 1.50"
+    -annotation4 "Ratio of 2.00"
+    -onCommand1 "$matrixRatio = 1.00"
+    -onCommand2 "$matrixRatio = 1.33"
+    -onCommand3 "$matrixRatio = 1.50"
+    -onCommand4 "$matrixRatio = 2.00"
+    "matrixRadioBtn";
   button
     -enableKeyboardFocus true
     -label "Go"
-    -command "spaceObjs($spaceInput)"
+    -command "spaceObjs($spaceInput,$matrixRatio)"
     "startButton";
   showWindow aspWindow;
-
-// add radio button to do 2x1 rectangle or similar dimension
-
 }
 
-proc spaceObjs( float $spacing ) {
+proc spaceObjs( float $spacing,float $ratio) {
   string $selection[];
   $selection = `ls -sl`;
   $selectionSize = size($selection);
@@ -62,12 +76,12 @@ proc spaceObjs( float $spacing ) {
     } else {
       int $xcount = 0;
       int $zcount = 0;
-      $squareish = int(sqrt(size($givenObjects)));
+      $squareish = int(sqrt(size($givenObjects)) * $ratio);
       for ( $obj in $givenObjects ) {
         string $transobj_x = $obj + ".translateX";
         string $transobj_z = $obj + ".translateZ";
         string $transobj_y = $obj + ".translateY";
-        if ( $xcount > $squareish ) {
+        if ( $xcount == $squareish ) {
           $xcount = 0;
           $zcount += 1;
         }
@@ -79,5 +93,3 @@ proc spaceObjs( float $spacing ) {
     }
   }
 }
-
-aSpacer();
