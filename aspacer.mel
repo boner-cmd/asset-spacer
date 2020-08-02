@@ -70,7 +70,9 @@ proc spaceObjs( string $groupName, float $spacing, int $needCenter) {
       $xcount = 0;
       $zcount += 1;
     }
-    setAttr $obj.translateX ($xcount * $spacing);
-    setAttr $obj.translateZ ($zcount * $spacing);
+    string $transobj_x = $obj + ".translateX";
+    string $transobj_z = $obj + ".translateZ";
+    setAttr $transobj_x ($xcount * $spacing);
+    setAttr $transobj_z ($zcount * $spacing);
   }
 }
