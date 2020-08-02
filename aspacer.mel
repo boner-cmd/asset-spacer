@@ -1,0 +1,76 @@
+// a tool to space out bulk-imported assets across a grid
+
+// from help.autodesk.com sample MEL code
+// https://help.autodesk.com/view/MAYAUL/2020/ENU/index.html?contextId=COMMANDS-INDEX
+
+// and publicly-accessible content from Professor Alan Price's Autumn 2005
+// "Experimental Scripting for Animation in Maya" course at Ohio State University
+// https://www.asc.ohio-state.edu/price.566/courses/694/
+
+global proc aSpacer()
+{
+  if (`window -exists aspWindow`) deleteUI aspWindow;
+
+  window
+    -title "Asset Spacer"
+    -iconName "aspWindow"
+    -maximizeButton false
+    -resizeToFitChildren true
+    -sizeable false
+    "aspWindow";
+  columnLayout
+    -columnAttach "left" 5
+    -rowSpacing 10;
+
+  // need to add a text object as a label
+
+  textField
+    -changeCommand "$groupInput = `textField -query -text groupField`"
+    -enterCommand "setFocus spacingField"
+    "groupField";
+
+  // need to add a text object as a label
+
+  floatField
+    -minValue 0
+    -value 0
+    -precision 2
+    -changeCommand "$spaceInput = `floatField -query -value spacingField`"
+    -enterCommand "setFocus recenterBox"
+    "spacingField";
+  checkBox
+    -enableKeyboardFocus true
+    -label "Return assets to origin (0,0,0) before spacing"
+    -onCommand "$recenter = 1"
+    -offCommand "$recenter = 0"
+    "recenterBox";
+  button
+    -enableKeyboardFocus true
+    -label "Go"
+    -command "spaceObjs($groupInput, $spaceInput, $recenter)"
+    "startButton";
+  showWindow aspWindow;
+}
+
+proc spaceObjs( string $groupName, float $spacing, int $needCenter) {
+  string $givenObjects[];
+  $xcount = 0;
+  $zcount = 0;
+  $givenObjects = `listRelatives $groupName`;
+  select -clear;
+  $squareish = int(sqrt(size($givenObjects)));
+  for ( $obj in $givenObjects ) {
+    if ( $needCenter ) {
+      setAttr $obj.translateX 0;
+      setAttr $obj.translateY 0;
+      setAttr $obj.translateZ 0;
+    }
+    select -add $obj;
+    if ( $xcount > $squareish ) {
+      $xcount = 0;
+      $zcount += 1;
+    }
+    setAttr $obj.translateX ($xcount * $spacing);
+    setAttr $obj.translateZ ($zcount * $spacing);
+  }
+}
