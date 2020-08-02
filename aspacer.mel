@@ -24,13 +24,6 @@ global proc aSpacer()
 
   // need to add a text object as a label
 
-  textField
-    -changeCommand "$groupInput = `textField -query -text groupField`"
-    -enterCommand "setFocus spacingField"
-    "groupField";
-
-  // need to add a text object as a label
-
   floatField
     -minValue 0
     -value 0
@@ -41,29 +34,41 @@ global proc aSpacer()
   button
     -enableKeyboardFocus true
     -label "Go"
-    -command "spaceObjs($groupInput, $spaceInput)"
+    -command "spaceObjs($spaceInput)"
     "startButton";
   showWindow aspWindow;
 }
 
-proc spaceObjs( string $groupName, float $spacing ) {
-  string $givenObjects[];
-  int $xcount = 0;
-  int $zcount = 0;
-  $givenObjects = `listRelatives $groupName`;
-  select -clear;
-  $squareish = int(sqrt(size($givenObjects)));
-  for ( $obj in $givenObjects ) {
-    string $transobj_x = $obj + ".translateX";
-    string $transobj_z = $obj + ".translateZ";
-    string $transobj_y = $obj + ".translateY";
-    if ( $xcount > $squareish ) {
-      $xcount = 0;
-      $zcount += 1;
+proc spaceObjs( float $spacing ) {
+  string $selection[];
+  $selection = `ls -sl`;
+  $selectionSize = size($selection);
+  if ( $selectionSize > 1 ) {
+    print "More than one object selected.";
+  } else if ( $selectionSize == 0 ) {
+    print "No object selected.";
+  } else if ( $selectionSize < 0 ) {
+    select -clear;
+    print "Negative selection detected.";
+  } else {
+    string $givenObjects[];
+    $givenObjects = `listRelatives $selection`;
+    int $xcount = 0;
+    int $zcount = 0;
+    $givenObjects = `listRelatives $groupName`;
+    $squareish = int(sqrt(size($givenObjects)));
+    for ( $obj in $givenObjects ) {
+      string $transobj_x = $obj + ".translateX";
+      string $transobj_z = $obj + ".translateZ";
+      string $transobj_y = $obj + ".translateY";
+      if ( $xcount > $squareish ) {
+        $xcount = 0;
+        $zcount += 1;
+      }
+      setAttr $transobj_y 0;
+      setAttr $transobj_x ($xcount * $spacing);
+      setAttr $transobj_z ($zcount * $spacing);
+      $xcount += 1;
     }
-    setAttr $transobj_y 0;
-    setAttr $transobj_x ($xcount * $spacing);
-    setAttr $transobj_z ($zcount * $spacing);
-    $xcount += 1;
   }
 }
