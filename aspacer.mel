@@ -58,6 +58,7 @@ global proc aSpacer()
     -label "Attempt to center the matrix"
     -onCommand "$center = 1"
     -offCommand "$center = 0"
+    "centerChk";
   formLayout -edit
     -attachForm "spacingLabel" "left" 5
     -attachForm "spacingLabel" "top" 10
@@ -67,6 +68,7 @@ global proc aSpacer()
     -attachForm "matrixRadioBtn" "left" 5
     -attachControl "goButton" "top" 10 "matrixRadioBtn"
     -attachForm "goButton" "left" 5
+    -attachControl "centerChk" "right" 5 "goButton"
     "testForm";
   showWindow aspWindow;
 }
