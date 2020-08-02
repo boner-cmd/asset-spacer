@@ -20,11 +20,7 @@ global proc aSpacer()
     -resizeToFitChildren true
     -sizeable false
     "aspWindow";
-  columnLayout
-    -columnAttach "left" 5
-    -rowSpacing 10;
-
-  // need to add a text object as a label
+  formLayout "testForm";
   text
     -label "Matrix Object Spacing"
     "spacingLabel";
@@ -53,7 +49,17 @@ global proc aSpacer()
     -enableKeyboardFocus true
     -label "Go"
     -command "spaceObjs($spaceInput,$matrixRatio)"
-    "startButton";
+    "goButton";
+  formLayout -edit
+    -attachForm "spacingLabel" "left" 5
+    -attachForm "spacingLabel" "top" 9
+    -attachControl "spacingField" "left" 5 "spacingLabel"
+    -attachForm "spacingField" "top" 5
+    -attachControl "matrixRadioBtn" "top" 10 "spacingLabel"
+    -attachForm "matrixRadioBtn" "left" 5
+    -attachControl "goButton" "top" 10 "matrixRadioBtn"
+    -attachForm "goButton" "left" 5
+    "testForm";
   showWindow aspWindow;
 }
 
