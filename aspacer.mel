@@ -36,43 +36,38 @@ global proc aSpacer()
     -value 0
     -precision 2
     -changeCommand "$spaceInput = `floatField -query -value spacingField`"
-    -enterCommand "setFocus recenterBox"
+    -enterCommand "setFocus startButton"
     "spacingField";
-  checkBox
-    -enableKeyboardFocus true
-    -label "Return assets to origin (0,0,0) before spacing"
-    -onCommand "$recenter = 1"
-    -offCommand "$recenter = 0"
-    "recenterBox";
   button
     -enableKeyboardFocus true
     -label "Go"
-    -command "spaceObjs($groupInput, $spaceInput, $recenter)"
+    -command "spaceObjs($groupInput, $spaceInput)"
     "startButton";
   showWindow aspWindow;
 }
 
-proc spaceObjs( string $groupName, float $spacing, int $needCenter) {
+proc spaceObjs( string $groupName, float $spacing ) {
   string $givenObjects[];
-  $xcount = 0;
-  $zcount = 0;
+  int $xcount = 0;
+  int $zcount = 0;
   $givenObjects = `listRelatives $groupName`;
   select -clear;
   $squareish = int(sqrt(size($givenObjects)));
   for ( $obj in $givenObjects ) {
+    string $transobj_x = $obj + ".translateX";
+    string $transobj_z = $obj + ".translateZ";
+    string $transobj_y = $obj + ".translateY";
     if ( $needCenter ) {
-      setAttr $obj.translateX 0;
-      setAttr $obj.translateY 0;
-      setAttr $obj.translateZ 0;
+      setAttr $transobj_x 0;
+      setAttr $transobj_z 0;
+      setAttr $transobj_y 0;
     }
-    select -add $obj;
     if ( $xcount > $squareish ) {
       $xcount = 0;
       $zcount += 1;
     }
-    string $transobj_x = $obj + ".translateX";
-    string $transobj_z = $obj + ".translateZ";
     setAttr $transobj_x ($xcount * $spacing);
     setAttr $transobj_z ($zcount * $spacing);
+    $xcount += 1;
   }
 }
