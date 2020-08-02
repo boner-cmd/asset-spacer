@@ -20,7 +20,7 @@ global proc aSpacer()
     -resizeToFitChildren true
     -sizeable false
     "aspWindow";
-  formLayout "testForm";
+  formLayout -p aspWindow "testForm";
   text
     -label "Matrix object spacing"
     "spacingLabel";
