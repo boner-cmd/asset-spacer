@@ -8,12 +8,18 @@
 // "Experimental Scripting for Animation in Maya" course at Ohio State University
 // https://www.asc.ohio-state.edu/price.566/courses/694/
 
+
+// TODO add newlines to error messages
+// TODO correct offset in checkbox label
+
 global proc aSpacer()
 {
   if (`window -exists aspWindow`) deleteUI aspWindow;
+
   float $spaceInput = 0;
   float $matrixRatio = 1;
-  int $center = 0;
+  int $centerChk = 0;
+
   window
     -title "Asset Spacer"
     -iconName "aspWindow"
@@ -52,12 +58,14 @@ global proc aSpacer()
     "matrixRadioBtn";
   button
     -label "Go"
-    -command "spaceObjs($spaceInput,$matrixRatio,$centered)"
+
+    // make a new window and destroy the old one, then run the command
+    -command "spaceObjs($spaceInput,$matrixRatio,$centerChk)"
     "goButton";
   checkBoxGrp
     -label "Attempt to center the matrix"
-    -onCommand "$center = 1"
-    -offCommand "$center = 0"
+    -onCommand "$centerChk = 1"
+    -offCommand "$centerChk = 0"
     "centerChk";
   formLayout -edit
     -attachForm "spacingLabel" "left" 5
@@ -68,7 +76,8 @@ global proc aSpacer()
     -attachForm "matrixRadioBtn" "left" 5
     -attachControl "goButton" "top" 10 "matrixRadioBtn"
     -attachForm "goButton" "left" 5
-    -attachControl "centerChk" "right" 5 "goButton"
+    -attachControl "centerChk" "left" 5 "goButton"
+    -attachControl "centerChk" "top" 14 "matrixRadioBtn"
     "testForm";
   showWindow aspWindow;
 }
@@ -90,19 +99,24 @@ proc spaceObjs( float $spacing,float $ratio,int $center) {
     } else {
       int $xcount = 0;
       int $zcount = 0;
-      $squareish = int(sqrt(size($givenObjects)) * $ratio);
+
+      $totalObjs = size($givenObjects);
+      $algWidth = ($totalObjs * sqrt($ratio)) / sqrt($totalObjs);
+      $algHeight = sqrt($totalObjs) / sqrt($ratio);
+
+      float $spacingCorrection = ($spacing * .5);
       for ( $obj in $givenObjects ) {
         string $transobj_x = $obj + ".translateX";
         string $transobj_z = $obj + ".translateZ";
         string $transobj_y = $obj + ".translateY";
-        if ( $xcount == $squareish ) {
+        if ( $xcount >= $algWidth ) {
           $xcount = 0;
           $zcount += 1;
         }
         setAttr $transobj_y 0;
-        if ( $center ) {
-          float $xOffset = -($squareish/2) * ($ratio);
-          float $zOffset = -($squareish/2) * (1/$ratio);
+        if ( $center == 1 ) {
+          float $xOffset = -(($algWidth/2) * $spacing) + $spacingCorrection;
+          float $zOffset = -(($algHeight/2) * $spacing) + $spacingCorrection;
           setAttr $transobj_x (($xcount * $spacing) + $xOffset);
           setAttr $transobj_z (($zcount * $spacing) + $zOffset);
         } else {
