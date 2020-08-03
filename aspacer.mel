@@ -16,9 +16,9 @@ global proc aSpacer()
 {
   if (`window -exists aspWindow`) deleteUI aspWindow;
 
-  float $spaceInput = 0;
-  float $matrixRatio = 1;
-  int $centerChk = 0;
+//  float $spaceInput = 0;
+//  float $matrixRatio = 1;
+//  int $centerChk = 0;
 
   window
     -title "Asset Spacer"
