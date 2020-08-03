@@ -106,6 +106,8 @@ proc spaceObjs( float $spacing,float $ratio,int $center) {
 
       float $spacingCorrection = ($spacing * .5);
       for ( $obj in $givenObjects ) {
+        // use getAttr to determine if $obj is hidden, then skip the object if so
+
         string $transobj_x = $obj + ".translateX";
         string $transobj_z = $obj + ".translateZ";
         string $transobj_y = $obj + ".translateY";
