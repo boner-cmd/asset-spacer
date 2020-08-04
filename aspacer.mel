@@ -8,16 +8,15 @@
 // "Experimental Scripting for Animation in Maya" course at Ohio State University
 // https://www.asc.ohio-state.edu/price.566/courses/694/
 
-// TODO add newlines to error messages
 // TODO correct offset in checkbox label
 
 global proc aSpacer()
 {
   if (`window -exists aspWindow`) deleteUI aspWindow;
 
-  float $spaceInput = 0;
-  float $matrixRatio = 1;
-  int $centerChk = 0;
+//  float $spaceInput = 0;
+//  float $matrixRatio = 1;
+//  int $centerChk = 0;
 
   window
     -title "Asset Spacer"
@@ -90,15 +89,15 @@ proc spaceObjs( float $spacing,float $ratio,int $center,int $skiphide) {
   $selection = `ls -sl`;
   $selectionSize = size($selection);
   if ( $selectionSize > 1 ) {
-    print "More than one object selected.";
+    print "More than one object selected.\n";
   } else if ( $selectionSize == 0 ) {
-    print "No object selected.";
+    print "No object selected.\n";
   } else {
     string $givenObjects[];
     $givenObjects = `listRelatives $selection`;
     $shapeCheck = `listRelatives -s $selection`;
     if ( size($shapeCheck) != 0 ) {
-      print "Selection has Shape children. Are you sure a group is selected?";
+      print "Selection has Shape children. Are you sure a group is selected?\n";
     } else {
       int $xcount = 0;
       int $zcount = 0;
