@@ -88,12 +88,16 @@ proc updateSpacerVars() {
   // can't get radio button state, using onCommand/offCommand until then
   $centerChk = `checkBoxGrp -query -value1 chkFeatures`
   $skipHidden = `checkBoxGrp -query -value2 chkFeatures`
-  $updateTuple = ($spaceInput, $matrixRatio, $centerChk, $skipHidden);
-  return $updateTuple;
+  // MEL doesn't support tuples
+  float $updateArray = [$spaceInput, $matrixRatio, $centerChk, $skipHidden];
+  return $updateArray;
 }
 
-proc spaceObjs( $inputTuple ) {
-  $spacing, $ratio, $center, $skiphide = $inputTuple
+proc spaceObjs( float $inputArray[] ) {
+  $spacing = $inputArray[0];
+  $ratio = $inputArray[1];
+  $center = $inputArray[2];
+  $skiphide = $inputArray[3];
   string $selection[];
   $selection = `ls -sl`;
   $selectionSize = size($selection);
