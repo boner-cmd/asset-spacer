@@ -84,10 +84,10 @@ proc updateSpacerVars() {
   int $centerChk = 0;
   int $skipHidden = 0;
   // query form elements to get values
-  $spaceInput = `floatField -query -value spacingField`
+  $spaceInput = `floatField -query -value spacingField`;
   // can't get radio button state, using onCommand/offCommand until then
-  $centerChk = `checkBoxGrp -query -value1 chkFeatures`
-  $skipHidden = `checkBoxGrp -query -value2 chkFeatures`
+  $centerChk = `checkBoxGrp -query -value1 chkFeatures`;
+  $skipHidden = `checkBoxGrp -query -value2 chkFeatures`;
   // MEL doesn't support tuples
   float $updateArray = [$spaceInput, $matrixRatio, $centerChk, $skipHidden];
   return $updateArray;
