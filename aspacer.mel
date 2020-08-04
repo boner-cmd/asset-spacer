@@ -33,6 +33,7 @@ global proc aSpacer()
     -minValue 0
     -value 0
     -precision 2
+    -w 75
     -changeCommand "$spaceInput = `floatField -query -value spacingField`"
     "spacingField";
   radioButtonGrp
