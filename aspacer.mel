@@ -10,9 +10,6 @@
 
 // TODO correct offset in checkbox label
 
-
-// strip change commands
-
 global proc aSpacer()
 {
   if (`window -exists aspWindow`) deleteUI aspWindow;
@@ -85,7 +82,6 @@ proc float[] updateSpacerVars() {
   if ( $matrixRatio == 0) $matrixRatio = 1;
   $centerChk = `checkBoxGrp -query -value1 chkFeatures`;
   $skipHidden = `checkBoxGrp -query -value2 chkFeatures`;
-  // MEL doesn't support tuples
   float $updateArray[] = {$spaceInput, $matrixRatio, $centerChk, $skipHidden};
   return $updateArray;
 }
