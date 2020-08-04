@@ -71,6 +71,11 @@ global proc aSpacer()
 }
 
 proc float[] updateSpacerVars() {
+  // assign default values
+  float $spaceInput = 0;
+  float $matrixRatio = 1;
+  int $centerChk = 0;
+  int $skipHidden = 0;
   // query form elements to get values
   $spaceInput = `floatField -query -value spacingField`;
   $matrixRatio = `radioButtonGrp -query -select matrixRadioBtn`;
