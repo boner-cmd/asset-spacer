@@ -17,10 +17,6 @@ global proc aSpacer()
 {
   if (`window -exists aspWindow`) deleteUI aspWindow;
 
-  float $spaceInput = 0;
-  float $matrixRatio = 1;
-  int $centerChk = 0;
-
   window
     -title "Asset Spacer"
     -iconName "aspWindow"
@@ -37,7 +33,6 @@ global proc aSpacer()
     -value 0
     -precision 2
     -w 75
-    -changeCommand "$spaceInput = `floatField -query -value spacingField`"
     "spacingField";
   radioButtonGrp
     -numberOfRadioButtons 4
@@ -60,18 +55,12 @@ global proc aSpacer()
     "matrixRadioBtn";
   button
     -label "Go"
-
-    // make a new window and destroy the old one, then run the command
     -command "spaceObjs(updateSpacerVars())"
     "goButton";
   checkBoxGrp
     -numberOfCheckBoxes 2
     -label1 "Attempt to center the matrix"
-    -onCommand1 "$centerChk = 1"
-    -offCommand1 "$centerChk = 0"
     -label2 "Skip non-visible objects"
-    -onCommand2 "$skipHidden = 1"
-    -offCommand2 "$skipHidden = 0"
     "chkFeatures";
   formLayout -edit
     -attachForm "spacingLabel" "left" 5
@@ -89,23 +78,14 @@ global proc aSpacer()
 }
 
 proc updateSpacerVars() {
+  // assign default values
+  float $spaceInput = 0;
+  float $matrixRatio = 1;
+  int $centerChk = 0;
+  int $skipHidden = 0;
   // query form elements to get values
   $spaceInput = `floatField -query -value spacingField`
-  // need to test using -value on a radio button group
-  switch ( `radioButtonGrp -query -value matrixRadioBtn` ) {
-    case 1:
-      $matrixRatio = 1;
-      break;
-    case 2:
-      $matrixRatio = 1.33;
-      break;
-    case 3:
-      $matrixRatio = 1.5;
-      break;
-    case 4:
-      $matrixRatio = 2;
-      break;
-  }
+  // can't get radio button state, using onCommand/offCommand until then
   $centerChk = `checkBoxGrp -query -value1 chkFeatures`
   $skipHidden = `checkBoxGrp -query -value2 chkFeatures`
   $updateTuple = ($spaceInput, $matrixRatio, $centerChk, $skipHidden);
