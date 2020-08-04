@@ -10,13 +10,16 @@
 
 // TODO correct offset in checkbox label
 
+
+// strip change commands
+
 global proc aSpacer()
 {
   if (`window -exists aspWindow`) deleteUI aspWindow;
 
-//  float $spaceInput = 0;
-//  float $matrixRatio = 1;
-//  int $centerChk = 0;
+  float $spaceInput = 0;
+  float $matrixRatio = 1;
+  int $centerChk = 0;
 
   window
     -title "Asset Spacer"
@@ -69,7 +72,7 @@ global proc aSpacer()
     -label2 "Skip non-visible objects"
     -onCommand2 "$skipHidden = 1"
     -offCommand2 "$skipHidden = 0"
-    "centerChk";
+    "chkFeatures";
   formLayout -edit
     -attachForm "spacingLabel" "left" 5
     -attachForm "spacingLabel" "top" 10
@@ -79,13 +82,38 @@ global proc aSpacer()
     -attachForm "matrixRadioBtn" "left" 5
     -attachControl "goButton" "top" 10 "matrixRadioBtn"
     -attachForm "goButton" "left" 5
-    -attachControl "centerChk" "left" 5 "goButton"
-    -attachControl "centerChk" "top" 14 "matrixRadioBtn"
+    -attachControl "chkFeatures" "left" 5 "goButton"
+    -attachControl "chkFeatures" "top" 14 "matrixRadioBtn"
     "testForm";
   showWindow aspWindow;
 }
 
-proc spaceObjs( float $spacing,float $ratio,int $center,int $skiphide) {
+proc updateSpacerVars() {
+  // query form elements to get values
+  $spaceInput = `floatField -query -value spacingField`
+  // need to test using -value on a radio button group
+  switch ( `radioButtonGrp -query -value matrixRadioBtn` ) {
+    case 1:
+      $matrixRatio = 1;
+      break;
+    case 2:
+      $matrixRatio = 1.33;
+      break;
+    case 3:
+      $matrixRatio = 1.5;
+      break;
+    case 4:
+      $matrixRatio = 2;
+      break;
+  }
+  $centerChk = `checkBoxGrp -query -value1 chkFeatures`
+  $skipHidden = `checkBoxGrp -query -value2 chkFeatures`
+  $updateTuple = ($spaceInput, $matrixRatio, $centerChk, $skipHidden);
+  return $updateTuple;
+}
+
+proc spaceObjs( $inputTuple ) {
+  $spacing, $ratio, $center, $skiphide = $inputTuple
   string $selection[];
   $selection = `ls -sl`;
   $selectionSize = size($selection);
