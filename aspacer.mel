@@ -8,7 +8,6 @@
 // "Experimental Scripting for Animation in Maya" course at Ohio State University
 // https://www.asc.ohio-state.edu/price.566/courses/694/
 
-
 // TODO add newlines to error messages
 // TODO correct offset in checkbox label
 
@@ -60,12 +59,16 @@ global proc aSpacer()
     -label "Go"
 
     // make a new window and destroy the old one, then run the command
-    -command "spaceObjs($spaceInput,$matrixRatio,$centerChk)"
+    -command "spaceObjs($spaceInput,$matrixRatio,$centerChk,$skipHidden)"
     "goButton";
   checkBoxGrp
-    -label "Attempt to center the matrix"
-    -onCommand "$centerChk = 1"
-    -offCommand "$centerChk = 0"
+    -numberOfCheckBoxes 2
+    -label1 "Attempt to center the matrix"
+    -onCommand1 "$centerChk = 1"
+    -offCommand1 "$centerChk = 0"
+    -label2 "Skip non-visible objects"
+    -onCommand2 "$skipHidden = 1"
+    -offCommand2 "$skipHidden = 0"
     "centerChk";
   formLayout -edit
     -attachForm "spacingLabel" "left" 5
@@ -82,7 +85,7 @@ global proc aSpacer()
   showWindow aspWindow;
 }
 
-proc spaceObjs( float $spacing,float $ratio,int $center) {
+proc spaceObjs( float $spacing,float $ratio,int $center,int $skiphide) {
   string $selection[];
   $selection = `ls -sl`;
   $selectionSize = size($selection);
@@ -99,33 +102,33 @@ proc spaceObjs( float $spacing,float $ratio,int $center) {
     } else {
       int $xcount = 0;
       int $zcount = 0;
-
       $totalObjs = size($givenObjects);
       $algWidth = ($totalObjs * sqrt($ratio)) / sqrt($totalObjs);
       $algHeight = sqrt($totalObjs) / sqrt($ratio);
-
       float $spacingCorrection = ($spacing * .5);
       for ( $obj in $givenObjects ) {
-        // use getAttr to determine if $obj is hidden, then skip the object if so
-
-        string $transobj_x = $obj + ".translateX";
-        string $transobj_z = $obj + ".translateZ";
-        string $transobj_y = $obj + ".translateY";
-        if ( $xcount >= $algWidth ) {
-          $xcount = 0;
-          $zcount += 1;
+        string $visobj = $obj + ".visibility";
+        int $visobjval = `getAttr $visobj`;
+        if ( (($visobjval == 1) && ($skiphide == 1)) || ($skiphide == 0) ) {
+          string $transobj_x = $obj + ".translateX";
+          string $transobj_z = $obj + ".translateZ";
+          string $transobj_y = $obj + ".translateY";
+          if ( $xcount >= $algWidth ) {
+            $xcount = 0;
+            $zcount += 1;
+          }
+          setAttr $transobj_y 0;
+          if ( $center == 1 ) {
+            float $xOffset = -(($algWidth/2) * $spacing) + $spacingCorrection;
+            float $zOffset = -(($algHeight/2) * $spacing) + $spacingCorrection;
+            setAttr $transobj_x (($xcount * $spacing) + $xOffset);
+            setAttr $transobj_z (($zcount * $spacing) + $zOffset);
+          } else {
+            setAttr $transobj_x ($xcount * $spacing);
+            setAttr $transobj_z ($zcount * $spacing);
+          }
+          $xcount += 1;
         }
-        setAttr $transobj_y 0;
-        if ( $center == 1 ) {
-          float $xOffset = -(($algWidth/2) * $spacing) + $spacingCorrection;
-          float $zOffset = -(($algHeight/2) * $spacing) + $spacingCorrection;
-          setAttr $transobj_x (($xcount * $spacing) + $xOffset);
-          setAttr $transobj_z (($zcount * $spacing) + $zOffset);
-        } else {
-          setAttr $transobj_x ($xcount * $spacing);
-          setAttr $transobj_z ($zcount * $spacing);
-        }
-        $xcount += 1;
       }
     }
   }
