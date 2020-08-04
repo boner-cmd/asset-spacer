@@ -89,7 +89,7 @@ proc updateSpacerVars() {
   $centerChk = `checkBoxGrp -query -value1 chkFeatures`;
   $skipHidden = `checkBoxGrp -query -value2 chkFeatures`;
   // MEL doesn't support tuples
-  float $updateArray = [$spaceInput, $matrixRatio, $centerChk, $skipHidden];
+  float $updateArray[] = {$spaceInput, $matrixRatio, $centerChk, $skipHidden};
   return $updateArray;
 }
 
