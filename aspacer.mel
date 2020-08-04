@@ -8,8 +8,6 @@
 // "Experimental Scripting for Animation in Maya" course at Ohio State University
 // https://www.asc.ohio-state.edu/price.566/courses/694/
 
-// TODO correct offset in checkbox label
-
 global proc aSpacer()
 {
   if (`window -exists aspWindow`) deleteUI aspWindow;
