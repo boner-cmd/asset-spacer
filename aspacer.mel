@@ -62,7 +62,7 @@ global proc aSpacer()
     -label "Go"
 
     // make a new window and destroy the old one, then run the command
-    -command "spaceObjs($spaceInput,$matrixRatio,$centerChk,$skipHidden)"
+    -command "spaceObjs(updateSpacerVars())"
     "goButton";
   checkBoxGrp
     -numberOfCheckBoxes 2
