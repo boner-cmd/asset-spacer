@@ -45,7 +45,7 @@ global proc aSpacer()
     "ratioRadioGrp";
   button
     -label "Go"
-    -command "spaceObjs(updateSpacerVars())"
+    -command "if ( vfySelection() == 1 ) spaceObjs(updateSpacerVars());"
     "goButton";
   checkBoxGrp
     -numberOfCheckBoxes 2
@@ -78,22 +78,19 @@ proc float[] updateSpacerVars() {
   float $matrixRatio = 1;
   int $centerChk = 0;
   int $skipHidden = 0;
+  int $layupY = 0;
   // query form elements to get values
   $spaceInput = `floatField -query -value spacingField`;
   $matrixRatio = `radioButtonGrp -query -select ratioRadioGrp`;
   if ( $matrixRatio == 0) $matrixRatio = 1;
   $centerChk = `checkBoxGrp -query -value1 chkFeatures`;
   $skipHidden = `checkBoxGrp -query -value2 chkFeatures`;
-  float $updateArray[] = {$spaceInput, $matrixRatio, $centerChk, $skipHidden};
+  $layupY = `checkBox -query -value chkY`;
+  float $updateArray[] = {$spaceInput, $matrixRatio, $centerChk, $skipHidden,$layupY};
   return $updateArray;
 }
 
-proc spaceObjs( float $inputArray[] ) {
-  $spacing = $inputArray[0];
-  $ratio = $inputArray[1];
-  $center = $inputArray[2];
-  $skiphide = $inputArray[3];
-  string $selection[];
+proc int vfySelection () {
   $selection = `ls -sl`;
   $selectionSize = size($selection);
   if ( $selectionSize > 1 ) {
@@ -101,42 +98,69 @@ proc spaceObjs( float $inputArray[] ) {
   } else if ( $selectionSize == 0 ) {
     print "No object selected.\n";
   } else {
-    string $givenObjects[];
-    $givenObjects = `listRelatives $selection`;
     $shapeCheck = `listRelatives -s $selection`;
     if ( size($shapeCheck) != 0 ) {
       print "Selection has Shape children. Are you sure a group is selected?\n";
     } else {
-      int $xcount = 0;
-      int $zcount = 0;
-      $totalObjs = size($givenObjects);
-      $algWidth = ($totalObjs * sqrt($ratio)) / sqrt($totalObjs);
-      $algHeight = sqrt($totalObjs) / sqrt($ratio);
-      float $spacingCorrection = ($spacing * .5);
-      for ( $obj in $givenObjects ) {
-        string $visobj = $obj + ".visibility";
-        int $visobjval = `getAttr $visobj`;
-        if ( (($visobjval == 1) && ($skiphide == 1)) || ($skiphide == 0) ) {
-          string $transobj_x = $obj + ".translateX";
-          string $transobj_z = $obj + ".translateZ";
-          string $transobj_y = $obj + ".translateY";
-          if ( $xcount >= $algWidth ) {
-            $xcount = 0;
-            $zcount += 1;
-          }
-          setAttr $transobj_y 0;
-          if ( $center == 1 ) {
-            float $xOffset = -(($algWidth/2) * $spacing) + $spacingCorrection;
-            float $zOffset = -(($algHeight/2) * $spacing) + $spacingCorrection;
-            setAttr $transobj_x (($xcount * $spacing) + $xOffset);
-            setAttr $transobj_z (($zcount * $spacing) + $zOffset);
-          } else {
-            setAttr $transobj_x ($xcount * $spacing);
-            setAttr $transobj_z ($zcount * $spacing);
-          }
-          $xcount += 1;
+      return 1;
+    }
+  }
+  return 0;
+}
+
+proc spaceObjs( float $inputArray[] ) {
+  $spacing = $inputArray[0];
+  $ratio = $inputArray[1];
+  $center = $inputArray[2];
+  $skiphide = $inputArray[3];
+  $layY = $inputArray[4];
+  $selection = `ls -sl`;
+  $givenObjects = `listRelatives $selection`;
+  int $xcount = 0;
+  int $ycount = 0;
+  int $zcount = 0;
+  $totalObjs = size($givenObjects);
+  $algWidth = ($totalObjs * sqrt($ratio)) / sqrt($totalObjs);
+  $algHeight = sqrt($totalObjs) / sqrt($ratio);
+  float $spacingCorrection = ($spacing * .5);
+  for ( $obj in $givenObjects ) {
+    string $visobj = $obj + ".visibility";
+    int $visobjval = `getAttr $visobj`;
+    if ( (($visobjval == 1) && ($skiphide == 1)) || ($skiphide == 0) ) {
+      string $transobj_x = $obj + ".translateX";
+      string $transobj_z = $obj + ".translateZ";
+      string $transobj_y = $obj + ".translateY";
+      if ( $layY == 0 ) {
+        if ( $xcount >= $algWidth ) {
+          $xcount = 0;
+          $zcount += 1;
         }
+        setAttr $transobj_y 0;
+        if ( $center == 1 ) {
+          float $xOffset = -(($algWidth/2) * $spacing) + $spacingCorrection;
+          float $zOffset = -(($algHeight/2) * $spacing) + $spacingCorrection;
+          setAttr $transobj_x (($xcount * $spacing) + $xOffset);
+          setAttr $transobj_z (($zcount * $spacing) + $zOffset);
+        } else {
+          setAttr $transobj_x ($xcount * $spacing);
+          setAttr $transobj_z ($zcount * $spacing);
+        }
+      } else {
+        if ( $xcount >= $algWidth ) {
+          $xcount = 0;
+          $ycount += 1;
+        }
+        setAttr $transobj_z 0;
+        if ( $center == 1 ) {
+          // don't center on Y axis
+          float $xOffset = -(($algWidth/2) * $spacing) + $spacingCorrection;
+          setAttr $transobj_x (($xcount * $spacing) + $xOffset);
+        } else {
+          setAttr $transobj_x ($xcount * $spacing);
+        }
+        setAttr $transobj_y ($ycount * $spacing);
       }
+      $xcount += 1;
     }
   }
 }
