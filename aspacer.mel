@@ -10,15 +10,15 @@
 
 global proc aSpacer()
 {
-  if (`window -exists aspaceWindow`) deleteUI aspaceWindow;
+  if (`window -exists aspaceWindowB`) deleteUI aspaceWindowB;
 
   window
     -title "Asset Spacer"
     -maximizeButton false
     -resizeToFitChildren true
     -sizeable false
-    "aspaceWindow";
-  formLayout "formLay";
+    "aspaceWindowB";
+  formLayout "formLayB";
   text
     -label "Matrix object spacing"
     "spacingLabel";
@@ -52,19 +52,24 @@ global proc aSpacer()
     -label1 "Attempt to center the matrix"
     -label2 "Skip non-visible objects"
     "chkFeatures";
+  checkBox
+    -label "Arrange on Y-Axis"
+    "chkY";
   formLayout -edit
     -attachForm "spacingLabel" "left" 5
     -attachForm "spacingLabel" "top" 10
     -attachControl "spacingField" "left" 5 "spacingLabel"
     -attachForm "spacingField" "top" 6
+    -attachForm "chkY" "top" 8
+    -attachControl "chkY" "left" 8 "spacingField"
     -attachControl "ratioRadioGrp" "top" 10 "spacingLabel"
     -attachForm "ratioRadioGrp" "left" 5
     -attachControl "goButton" "top" 10 "ratioRadioGrp"
     -attachForm "goButton" "left" 5
     -attachControl "chkFeatures" "left" 5 "goButton"
     -attachControl "chkFeatures" "top" 12 "ratioRadioGrp"
-    "formLay";
-  showWindow aspaceWindow;
+    "formLayB";
+  showWindow aspaceWindowB;
 }
 
 proc float[] updateSpacerVars() {
