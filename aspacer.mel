@@ -10,16 +10,15 @@
 
 global proc aSpacer()
 {
-  if (`window -exists aspWindow`) deleteUI aspWindow;
+  if (`window -exists aspaceWindow`) deleteUI aspaceWindow;
 
   window
     -title "Asset Spacer"
-    -iconName "aspWindow"
     -maximizeButton false
     -resizeToFitChildren true
     -sizeable false
-    "aspWindow";
-  formLayout -p aspWindow "testForm";
+    "aspaceWindow";
+  formLayout "formLay";
   text
     -label "Matrix object spacing"
     "spacingLabel";
@@ -43,7 +42,7 @@ global proc aSpacer()
     -columnWidth 3 40
     -columnWidth 4 40
     -columnWidth 5 40
-    "matrixRadioBtn";
+    "ratioRadioGrp";
   button
     -label "Go"
     -command "spaceObjs(updateSpacerVars())"
@@ -58,14 +57,14 @@ global proc aSpacer()
     -attachForm "spacingLabel" "top" 10
     -attachControl "spacingField" "left" 5 "spacingLabel"
     -attachForm "spacingField" "top" 6
-    -attachControl "matrixRadioBtn" "top" 10 "spacingLabel"
-    -attachForm "matrixRadioBtn" "left" 5
-    -attachControl "goButton" "top" 10 "matrixRadioBtn"
+    -attachControl "ratioRadioGrp" "top" 10 "spacingLabel"
+    -attachForm "ratioRadioGrp" "left" 5
+    -attachControl "goButton" "top" 10 "ratioRadioGrp"
     -attachForm "goButton" "left" 5
     -attachControl "chkFeatures" "left" 5 "goButton"
-    -attachControl "chkFeatures" "top" 14 "matrixRadioBtn"
-    "testForm";
-  showWindow aspWindow;
+    -attachControl "chkFeatures" "top" 12 "ratioRadioGrp"
+    "formLay";
+  showWindow aspaceWindow;
 }
 
 proc float[] updateSpacerVars() {
@@ -76,7 +75,7 @@ proc float[] updateSpacerVars() {
   int $skipHidden = 0;
   // query form elements to get values
   $spaceInput = `floatField -query -value spacingField`;
-  $matrixRatio = `radioButtonGrp -query -select matrixRadioBtn`;
+  $matrixRatio = `radioButtonGrp -query -select ratioRadioGrp`;
   if ( $matrixRatio == 0) $matrixRatio = 1;
   $centerChk = `checkBoxGrp -query -value1 chkFeatures`;
   $skipHidden = `checkBoxGrp -query -value2 chkFeatures`;
