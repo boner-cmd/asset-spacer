@@ -1,0 +1,80 @@
+// test suite for asset spacer
+// author: dimelo waterson (@boner-cmd)
+
+global int $asTestPasses;
+
+global proc testAssetSpacer() {
+
+  $asTestPasses = 0;
+
+  // to run, tests must exactly match procedure names!
+
+  string $testList[] =  {
+                        "soloX",
+                        "squareX",
+                        "rectangleX",
+                        "oddX",
+                        "oddXDiff",
+                        "soloZ",
+                        "squareZ",
+                        "rectangleZ",
+                        "oddZ",
+                        "oddZDiff"
+                        };
+  int $totalTests = size($testList);
+  runTests($testList);
+  print("aspacer results: " + $asTestPasses + " of " + $totalTests + " passed.\n");
+}
+
+// check that test procedures exist, then run them
+
+proc runTests(string[] $testSelection) {
+  for ( $test in $testSelection ) {
+    if ( `exists $name` == 0 ) {
+      string $errmsg = "Test procedure " + $name + " does not exist.\n";
+      error $errmsg;
+    } else {
+      eval $test;
+    }
+  }
+}
+
+proc soloX() {
+
+}
+
+proc squareX() {
+
+}
+
+proc rectangleX() {
+
+}
+
+proc oddX() {
+
+}
+
+proc oddXDiff() {
+
+}
+
+proc soloZ() {
+
+}
+
+proc squareZ() {
+
+}
+
+proc rectangleZ() {
+
+}
+
+proc oddZ() {
+
+}
+
+proc oddZDiff() {
+
+}
