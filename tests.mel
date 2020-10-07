@@ -26,8 +26,6 @@ global proc testAssetSpacer() {
   print("aspacer results: " + $asTestPasses + " of " + $totalTests + " passed.\n");
 }
 
-// check that test procedures exist, then run them
-
 proc runTests(string[] $testSelection) {
   for ( $test in $testSelection ) {
     if ( `exists $name` == 0 ) {
