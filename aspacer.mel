@@ -90,7 +90,7 @@ proc float[] updateSpacerVars() {
   return $updateArray;
 }
 
-proc int vfySelection () {
+proc int vfySelection() {
   $selection = `ls -sl`;
   $selectionSize = size($selection);
   if ( $selectionSize > 1 ) {
