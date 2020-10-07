@@ -37,6 +37,8 @@ proc runTests(string[] $testSelection) {
   }
 }
 
+// have each test add 1 to the global asTestPasses upon success
+
 proc soloX() {
 
 }
