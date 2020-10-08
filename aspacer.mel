@@ -74,13 +74,16 @@ global proc aSpacer()
 
 // command for accessing private procedures without using the GUI
 
-global proc aSpacerCmd() {
+global proc aSpacerCmd(float[] $spacerVars) {
+  // where $spacerVars is: {
+  //                       matrix spacing (a float),
+  //                       matrix ratio (a float),
+  //                       if centered (a boolean int),
+  //                       whether to skip hidden objs (a boolean int),
+  //                       whether to lay out objs up y axis (a boolean int)
+  //                       }
   vfySelection();
-  spaceObjs(updateSpacerVars);
-}
-
-proc float[] updateSpacerVarsCmd() {
-
+  spaceObjs($spacerVars);
 }
 
 proc float[] updateSpacerVars() {
@@ -102,6 +105,7 @@ proc float[] updateSpacerVars() {
 }
 
 // TODO consider converting to use error instead of print?
+// TODO still need a better way to detect if a group is selected
 
 proc int vfySelection() {
   $selection = `ls -sl`;
@@ -120,6 +124,10 @@ proc int vfySelection() {
   }
   return 0;
 }
+
+// TODO review to see if any procedures could be broken out
+// TODO look for opportunities to comment, if required
+
 
 proc spaceObjs( float $inputArray[] ) {
   $spacing = $inputArray[0];
