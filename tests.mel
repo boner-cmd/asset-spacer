@@ -1,11 +1,7 @@
 // test suite for asset spacer
 // author: dimelo waterson (@boner-cmd)
 
-global int $asTestPasses;
-
 global proc testAssetSpacer() {
-
-  $asTestPasses = 0;
 
   // to run, tests must exactly match procedure names!
 
@@ -22,59 +18,69 @@ global proc testAssetSpacer() {
                         "oddZDiff"
                         };
   int $totalTests = size($testList);
-  runTests($testList);
-  print("aspacer results: " + $asTestPasses + " of " + $totalTests + " passed.\n");
+  if ( $totalTests == 0 ) {
+    warning "Asset Spacer test list is empty.\n";
+    error "Edit the MEL to add tests by procedure name.\n";
+  }
+  int $testPasses = runTests($testList);
+  print("aspacer results: " + $testPasses + " of " + $totalTests + " passed.\n");
 }
 
-proc runTests(string[] $testSelection) {
+// run tests, return number of passed tests
+
+proc int runTests(string[] $testSelection) {
+  int $passes
   for ( $test in $testSelection ) {
     if ( `exists $name` == 0 ) {
       string $errmsg = "Test procedure " + $name + " does not exist.\n";
       error $errmsg;
     } else {
-      eval $test;
+      // possibly problematic syntax
+      $passes += eval $test;
     }
   }
+  return $passes;
 }
 
-// have each test add 1 to the global asTestPasses upon success
+// tests return 0 on fail, 1 on pass
+// tests should warn (warning) as they run and warn their result before returning
 
-proc soloX() {
-
-}
-
-proc squareX() {
-
-}
-
-proc rectangleX() {
+proc int soloX() {
 
 }
 
-proc oddX() {
+proc int squareX() {
 
 }
 
-proc oddXDiff() {
+proc int rectangleX() {
 
 }
 
-proc soloZ() {
+proc int oddX() {
 
 }
 
-proc squareZ() {
+proc int oddXDiff() {
 
 }
 
-proc rectangleZ() {
+proc int soloZ() {
 
 }
 
-proc oddZ() {
+proc int squareZ() {
 
 }
 
-proc oddZDiff() {
+proc int rectangleZ() {
+
+}
+
+proc int oddZ() {
+
+}
+
+proc int oddZDiff() {
 
 }
