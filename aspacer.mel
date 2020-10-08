@@ -72,6 +72,17 @@ global proc aSpacer()
   showWindow aspaceWindowB;
 }
 
+// command for accessing private procedures without using the GUI
+
+global proc aSpacerCmd() {
+  vfySelection();
+  spaceObjs(updateSpacerVars);
+}
+
+proc float[] updateSpacerVarsCmd() {
+
+}
+
 proc float[] updateSpacerVars() {
   // assign default values
   float $spaceInput = 0;
@@ -89,6 +100,8 @@ proc float[] updateSpacerVars() {
   float $updateArray[] = {$spaceInput, $matrixRatio, $centerChk, $skipHidden,$layupY};
   return $updateArray;
 }
+
+// TODO consider converting to use error instead of print?
 
 proc int vfySelection() {
   $selection = `ls -sl`;
