@@ -40,11 +40,43 @@ proc int runTests(string[] $testSelection) {
   return $passes;
 }
 
+// if MEL doesn't support comparing arrays element-for-element, do it ourselves
+// limited to comparing axis query results (arrays of three floats)
+
+proc int samePosition(float[] $firstPosition, float[] $secondPosition){
+  int $i;
+  for ($i = 0; $i < 3; $i++)) {
+    if ( $firstPosition[$i] != $secondPosition[$i] ) {
+      return 0;
+    }
+  }
+  return 1;
+}
+
 // tests return 0 on fail, 1 on pass
+// tests should be run in an empty viewport
 
 // TODO tests should warn (warning) as they run and warn their result before returning
 
 proc int soloX() {
+  string $cubename = "testCube1"
+  if ( catch (polyCube -name $cubename) ){
+    error "Test cube " + $cubename + " already exists.\n";
+  }
+
+  select $cubename;
+  aSpacerCmd();
+
+  float $pos[3] = `polyCube -q -ax $cubename`;
+  // TODO actually find the correct position
+  float $correctPos[3] = {0.5, 0.5, 0};
+  if ( samePosition($pos, $correctPos) ){
+    warning "Solo X test passed.\n";
+    return 1;
+  } else {
+    warning "Solo X test failed. Cube " + $cubename + " in wrong position.\n";
+    return 0;
+  }
 
 }
 
