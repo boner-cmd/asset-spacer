@@ -26,8 +26,6 @@ global proc testAssetSpacer() {
   print("aspacer results: " + $testPasses + " of " + $totalTests + " passed.\n");
 }
 
-// run tests, return number of passed tests
-
 proc int runTests(string[] $testSelection) {
   int $passes
   for ( $test in $testSelection ) {
@@ -43,7 +41,8 @@ proc int runTests(string[] $testSelection) {
 }
 
 // tests return 0 on fail, 1 on pass
-// tests should warn (warning) as they run and warn their result before returning
+
+// TODO tests should warn (warning) as they run and warn their result before returning
 
 proc int soloX() {
 
