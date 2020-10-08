@@ -56,8 +56,6 @@ proc int samePosition(float[] $firstPosition, float[] $secondPosition){
 // tests return 0 on fail, 1 on pass
 // tests should be run in an empty viewport
 
-// TODO tests should warn (warning) as they run and warn their result before returning
-
 proc int soloX() {
   string $cubename = "testCube1"
   if ( catch (polyCube -name $cubename) ){
