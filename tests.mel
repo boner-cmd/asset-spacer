@@ -17,6 +17,7 @@ global proc testAssetSpacer() {
                         "oddZ",
                         "oddZDiff"
                         };
+
   int $totalTests = size($testList);
   if ( $totalTests == 0 ) {
     warning "Asset Spacer test list is empty.\n";
@@ -56,16 +57,98 @@ proc int samePosition(float[] $firstPosition, float[] $secondPosition){
 // tests return 0 on fail, 1 on pass
 // tests should be run in an empty viewport
 
-proc int soloX() {
-  string $cubename = "testCube1"
-  if ( catch (polyCube -name $cubename) ){
-    error "Test cube " + $cubename + " already exists.\n";
+proc string[] makeTestPolys(int $numPolys, string $polyType){
+
+  // "polyPrimitive" is the command to create a soccer ball
+  // but all listed polygon types are primitives, including the platonic solids
+  string $polyPrimitives[11] =   {
+                                  "sphere",
+                                  "cube",
+                                  "cylinder",
+                                  "cone",
+                                  "plane",
+                                  "torus",
+                                  "prism",
+                                  "pyramid",
+                                  "pipe",
+                                  "helix",
+                                  "primitive"
+                                  };
+  string $platonicSolids[4] = {
+                              "dodecahedron",
+                              "icosahedron",
+                              "octahedron",
+                              "tetrahedron"
+                              };
+  tolower $polyType;
+  int $polyOnPrimitiveList = stringArrayContains($polyType, $polyPrimitives);
+  int $polyIsPlatonicSolid = stringArrayContains($polyType, $platonicSolids);
+
+  if ( $polyOnPrimitiveList || $polyIsPlatonicSolid ) {
+    capitalizeString($polyType);
+    string $polyName = "test" + $polyType;
+    string $polyCmd = "poly";
+    string $polyNameList[$numPolys];
+
+    if ( $polyIsPlatonicSolid ) {
+      $polyCmd += "PlatonicSolid -solidType ";
+      int $pSolidType;
+      switch ( startString($polyType, 1) ) {
+        case "D":
+          $pSolidType = 0;
+        break;
+        case "I":
+          $pSolidType = 1;
+        break;
+        case "O":
+          $pSolidType = 2;
+        break;
+        case "T":
+          $pSolidType = 3;
+        break;
+      }
+      $polyCmd += $pSolidType + " -name ";
+    } else {
+      $polyCmd += $polyType + " -name ";
+    }
+    int $i;
+    for ($n = 1; $n <= $numPolys; $n++){
+      $i = $n-1;
+      string $nextPoly = $polyName + $n;
+      if ( catch (eval ($polyCmd + $nextPoly)) ){
+        warning "Cannot create " + $nextPoly ".\n";
+        error $nextPoly + " already exists.\n";
+      }
+      $polyNameList[$i] = $nextPoly;
+    }
+    return $polyNameList;
+  } else {
+    warning "Valid polygon primitive types include: sphere, cube, cylinder, cone, \
+            plane, torus, prism, pyramid, pipe, helix, primitive (for soccer ball), \
+            dodecahedron, icosahedron, octahedron, and tetrahedron.\n";
+    error "Invalid poly primitive specified for creation.\n";
   }
+}
 
-  select $cubename;
-  aSpacerCmd();
+// get the position of an object using the appropriate procedure based on its name
+// TODO is it worth doing this, rather than just grabbing the translate attribute?
+// TODO are there times that querying the axis gives different results than translate attributes?
 
-  float $pos[3] = `polyCube -q -ax $cubename`;
+proc float[] getPosition(string $polygon){
+
+}
+
+proc int soloX(){
+  int $numPolys = 1;
+  string $polyNamesList[$numPolys] = makeTestPolys($numPolys, "cube");
+
+  // TODO created polygons must be added to a group, since Asset Spacer works by group
+
+  // select $somegroup;
+  aSpacerCmd({1, 1, 1, 0, 0});
+
+  float $pos[3]; // resolve TODO related to proc getPosition to complete this statement
+  
   // TODO actually find the correct position
   float $correctPos[3] = {0.5, 0.5, 0};
   if ( samePosition($pos, $correctPos) ){
@@ -75,7 +158,6 @@ proc int soloX() {
     warning "Solo X test failed. Cube " + $cubename + " in wrong position.\n";
     return 0;
   }
-
 }
 
 proc int squareX() {
