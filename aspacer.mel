@@ -8,6 +8,8 @@
 // "Experimental Scripting for Animation in Maya" course at Ohio State University
 // https://www.asc.ohio-state.edu/price.566/courses/694/
 
+// TODO if script is loaded, does procedure need to be global? (no, so... ?)
+
 global proc aSpacer()
 {
   if (`window -exists aspaceWindowB`) deleteUI aspaceWindowB;
@@ -82,8 +84,21 @@ global proc aSpacerCmd(float[] $spacerVars) {
   //                       whether to skip hidden objs (a boolean int),
   //                       whether to lay out objs up y axis (a boolean int)
   //                       }
+  checkVarArray($spacerVars);
   vfySelection();
   spaceObjs($spacerVars);
+}
+
+proc checkVarArray(float[] $spacerVars) {
+  if ( size($spacerVars) < 5 ){
+    warning "Asset Spacer only takes 5 parameters.\n";
+    error "Too few parameters provided to aSpacerCmd.\n";
+  }
+
+  if ( size($spacerVars) > 5 ) {
+    warning "Asset Spacer only takes 5 parameters.\n";
+    error "Too many parameters provided to aSpacerCmd.\n";
+  }
 }
 
 proc float[] updateSpacerVars() {
@@ -127,7 +142,6 @@ proc int vfySelection() {
 
 // TODO review to see if any procedures could be broken out
 // TODO look for opportunities to comment, if required
-
 
 proc spaceObjs( float $inputArray[] ) {
   $spacing = $inputArray[0];
